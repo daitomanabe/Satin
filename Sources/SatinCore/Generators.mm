@@ -1203,19 +1203,19 @@ GeometryData generateTriangleGeometryData(float size) {
     vtx[0] =
         (SatinVertex) { .position = simd_make_float3(size * sin(angle), size * cos(angle), 0.0),
                         .normal = simd_make_float3(0.0, 0.0, 1.0),
-                        .uv = simd_make_float2(0, 0) };
+                        .uv = simd_make_float2(0.5, 1) };
 
     angle = twoPi / 3.0;
     vtx[1] =
         (SatinVertex) { .position = simd_make_float3(size * sin(angle), size * cos(angle), 0.0),
                         .normal = simd_make_float3(0.0, 0.0, 1.0),
-                        .uv = simd_make_float2(0, 1) };
+                        .uv = simd_make_float2(1, 0) };
 
     angle = 2.0 * twoPi / 3.0;
     vtx[2] =
         (SatinVertex) { .position = simd_make_float3(size * sin(angle), size * cos(angle), 0.0),
                         .normal = simd_make_float3(0.0, 0.0, 1.0),
-                        .uv = simd_make_float2(1, 0) };
+                        .uv = simd_make_float2(0, 0) };
 
     ind[0] = (TriangleIndices) { .i0 = 0, .i1 = 2, .i2 = 1 };
 
