@@ -15,40 +15,40 @@ import simd
 import SatinCore
 #endif
 
-open class Object: Codable, ObservableObject {
-    public let idPublisher = PassthroughSubject<String, Never>()
-    @Published open var id: String = UUID().uuidString {
+@Observable open class Object: Codable {
+    @ObservationIgnored public let idPublisher = PassthroughSubject<String, Never>()
+    var id: String = UUID().uuidString {
         didSet {
             idPublisher.send(id)
         }
     }
 
-    public let labelPublisher = PassthroughSubject<String, Never>()
-    @Published open var label = "Object" {
+    @ObservationIgnored public let labelPublisher = PassthroughSubject<String, Never>()
+    public var label = "Object" {
         didSet {
             labelPublisher.send(label)
         }
     }
 
-    public let visiblePublisher = PassthroughSubject<Bool, Never>()
-    @Published open var visible = true {
+    @ObservationIgnored public let visiblePublisher = PassthroughSubject<Bool, Never>()
+    var visible = true {
         didSet {
             visiblePublisher.send(visible)
         }
     }
 
-    open var context: Context? = nil {
+    @ObservationIgnored open var context: Context? = nil {
         didSet {
             if let context, context != oldValue {
                 setup()
-                objectWillChange.send()
+                //objectWillChange.send()
             }
         }
     }
 
     // MARK: - Position
 
-    @Published open var position: simd_float3 = .zero {
+    public var position: simd_float3 = .zero {
         didSet {
             _translationMatrix.clear()
 
@@ -58,8 +58,8 @@ open class Object: Codable, ObservableObject {
         }
     }
 
-    var _worldPosition = ValueCache<simd_float3>()
-    public var worldPosition: simd_float3 {
+    @ObservationIgnored var _worldPosition = ValueCache<simd_float3>()
+    @ObservationIgnored public var worldPosition: simd_float3 {
         get {
             _worldPosition.get {
                 simd_make_float3(worldMatrix.columns.3)
@@ -74,14 +74,14 @@ open class Object: Codable, ObservableObject {
         }
     }
 
-    var _translationMatrix = ValueCache<matrix_float4x4>()
-    public var translationMatrix: matrix_float4x4 {
+    @ObservationIgnored var _translationMatrix = ValueCache<matrix_float4x4>()
+    @ObservationIgnored public var translationMatrix: matrix_float4x4 {
         _translationMatrix.get { translationMatrix3f(position) }
     }
 
     // MARK: - Orientation
 
-    @Published open var orientation = simd_quatf(matrix_identity_float4x4) {
+    public var orientation = simd_quatf(matrix_identity_float4x4) {
         didSet {
             _rotationMatrix.clear()
 
@@ -95,8 +95,8 @@ open class Object: Codable, ObservableObject {
         }
     }
 
-    var _worldOrientation = ValueCache<simd_quatf>()
-    public var worldOrientation: simd_quatf {
+    @ObservationIgnored var _worldOrientation = ValueCache<simd_quatf>()
+    @ObservationIgnored public var worldOrientation: simd_quatf {
         get {
             _worldOrientation.get {
                 let ws = worldScale
@@ -119,14 +119,14 @@ open class Object: Codable, ObservableObject {
         }
     }
 
-    var _rotationMatrix = ValueCache<matrix_float4x4>()
-    public var rotationMatrix: matrix_float4x4 {
+    @ObservationIgnored var _rotationMatrix = ValueCache<matrix_float4x4>()
+    @ObservationIgnored public var rotationMatrix: matrix_float4x4 {
         _rotationMatrix.get { matrix_float4x4(orientation) }
     }
 
     // MARK: - Scale
 
-    @Published open var scale: simd_float3 = .one {
+    public var scale: simd_float3 = .one {
         didSet {
             _scaleMatrix.clear()
 
@@ -136,8 +136,8 @@ open class Object: Codable, ObservableObject {
         }
     }
 
-    var _worldScale = ValueCache<simd_float3>()
-    public var worldScale: simd_float3 {
+    @ObservationIgnored var _worldScale = ValueCache<simd_float3>()
+    @ObservationIgnored public var worldScale: simd_float3 {
         get {
             _worldScale.get {
                 let wm = worldMatrix
@@ -156,8 +156,8 @@ open class Object: Codable, ObservableObject {
         }
     }
 
-    var _scaleMatrix = ValueCache<matrix_float4x4>()
-    public var scaleMatrix: matrix_float4x4 {
+    @ObservationIgnored var _scaleMatrix = ValueCache<matrix_float4x4>()
+    @ObservationIgnored public var scaleMatrix: matrix_float4x4 {
         _scaleMatrix.get {
             scaleMatrix3f(scale)
         }
@@ -165,8 +165,8 @@ open class Object: Codable, ObservableObject {
 
     // MARK: - Local Matrix
 
-    var _localMatrix = ValueCache<matrix_float4x4>()
-    public var localMatrix: matrix_float4x4 {
+    @ObservationIgnored var _localMatrix = ValueCache<matrix_float4x4>()
+    @ObservationIgnored public var localMatrix: matrix_float4x4 {
         get {
             _localMatrix.get {
                 simd_mul(simd_mul(translationMatrix, rotationMatrix), scaleMatrix)
@@ -185,14 +185,14 @@ open class Object: Codable, ObservableObject {
         }
     }
 
-    var _localMatrixInverse = ValueCache<matrix_float4x4>()
-    public var localMatrixInverse: matrix_float4x4 {
+    @ObservationIgnored var _localMatrixInverse = ValueCache<matrix_float4x4>()
+    @ObservationIgnored public var localMatrixInverse: matrix_float4x4 {
         _localMatrixInverse.get {
             localMatrix.inverse
         }
     }
 
-    var updateLocalMatrix = true {
+    @ObservationIgnored var updateLocalMatrix = true {
         didSet {
             if updateLocalMatrix {
                 updateLocalBounds = true
@@ -209,8 +209,8 @@ open class Object: Codable, ObservableObject {
 
     // MARK: - World Matrix
 
-    var _worldMatrix = ValueCache<matrix_float4x4>()
-    public var worldMatrix: matrix_float4x4 {
+    @ObservationIgnored var _worldMatrix = ValueCache<matrix_float4x4>()
+    @ObservationIgnored public var worldMatrix: matrix_float4x4 {
         get {
             _worldMatrix.get {
                 if let parent = parent {
@@ -229,14 +229,14 @@ open class Object: Codable, ObservableObject {
         }
     }
 
-    var _worldMatrixInverse = ValueCache<matrix_float4x4>()
-    public var worldMatrixInverse: matrix_float4x4 {
+    @ObservationIgnored var _worldMatrixInverse = ValueCache<matrix_float4x4>()
+    @ObservationIgnored  public var worldMatrixInverse: matrix_float4x4 {
         _worldMatrixInverse.get {
             worldMatrix.inverse
         }
     }
 
-    var updateWorldMatrix = true {
+    @ObservationIgnored var updateWorldMatrix = true {
         didSet {
             if updateWorldMatrix {
                 updateWorldBounds = true
@@ -266,8 +266,8 @@ open class Object: Codable, ObservableObject {
 
     // MARK: - Normal Bounds
 
-    var _normalMatrix = ValueCache<matrix_float3x3>()
-    public var normalMatrix: matrix_float3x3 {
+    @ObservationIgnored var _normalMatrix = ValueCache<matrix_float3x3>()
+    @ObservationIgnored public var normalMatrix: matrix_float3x3 {
         _normalMatrix.get {
             let n = worldMatrixInverse.transpose
             return simd_matrix(simd_make_float3(n.columns.0), simd_make_float3(n.columns.1), simd_make_float3(n.columns.2))
@@ -276,7 +276,7 @@ open class Object: Codable, ObservableObject {
 
     // MARK: - Bounds
 
-    open var updateBounds = true {
+    @ObservationIgnored  var updateBounds = true {
         didSet {
             if updateBounds {
                 _updateBounds = true
@@ -287,14 +287,14 @@ open class Object: Codable, ObservableObject {
         }
     }
 
-    var _updateBounds = true {
+    @ObservationIgnored var _updateBounds = true {
         didSet {
             updateLocalBounds = true
         }
     }
 
-    var _bounds = createBounds()
-    public var bounds: Bounds {
+    @ObservationIgnored var _bounds = createBounds()
+    @ObservationIgnored public var bounds: Bounds {
         if _updateBounds {
             _bounds = computeBounds()
             _updateBounds = false
@@ -304,7 +304,7 @@ open class Object: Codable, ObservableObject {
 
     // MARK: - Local Bounds
 
-    open var updateLocalBounds = true {
+    @ObservationIgnored  var updateLocalBounds = true {
         didSet {
             if updateLocalBounds {
                 _updateLocalBounds = true
@@ -315,7 +315,7 @@ open class Object: Codable, ObservableObject {
         }
     }
 
-    var _updateLocalBounds = true {
+    @ObservationIgnored var _updateLocalBounds = true {
         didSet {
             if _updateLocalBounds {
                 updateWorldBounds = true
@@ -323,8 +323,8 @@ open class Object: Codable, ObservableObject {
         }
     }
 
-    var _localBounds = createBounds()
-    public var localBounds: Bounds {
+    @ObservationIgnored var _localBounds = createBounds()
+    @ObservationIgnored public var localBounds: Bounds {
         if _updateLocalBounds {
             _localBounds = computeLocalBounds()
             _updateLocalBounds = false
@@ -334,7 +334,7 @@ open class Object: Codable, ObservableObject {
 
     // MARK: - World Bounds
 
-    open var updateWorldBounds = true {
+    @ObservationIgnored  var updateWorldBounds = true {
         didSet {
             if updateWorldBounds {
                 _updateWorldBounds = true
@@ -345,10 +345,10 @@ open class Object: Codable, ObservableObject {
         }
     }
 
-    var _updateWorldBounds = true
+    @ObservationIgnored var _updateWorldBounds = true
 
-    var _worldBounds = createBounds()
-    public var worldBounds: Bounds {
+    @ObservationIgnored var _worldBounds = createBounds()
+    @ObservationIgnored public var worldBounds: Bounds {
         if _updateWorldBounds {
             _worldBounds = computeWorldBounds()
             _updateWorldBounds = false
@@ -358,22 +358,22 @@ open class Object: Codable, ObservableObject {
 
     // MARK: - Directions
 
-    var _forwardDirection = ValueCache<simd_float3>()
-    public var forwardDirection: simd_float3 {
+    @ObservationIgnored var _forwardDirection = ValueCache<simd_float3>()
+    @ObservationIgnored public var forwardDirection: simd_float3 {
         _forwardDirection.get {
             simd_normalize(orientation.act(Satin.worldForwardDirection))
         }
     }
 
-    var _upDirection = ValueCache<simd_float3>()
-    public var upDirection: simd_float3 {
+    @ObservationIgnored var _upDirection = ValueCache<simd_float3>()
+    @ObservationIgnored public var upDirection: simd_float3 {
         _upDirection.get {
             simd_normalize(orientation.act(Satin.worldUpDirection))
         }
     }
 
-    var _rightDirection = ValueCache<simd_float3>()
-    public var rightDirection: simd_float3 {
+    @ObservationIgnored var _rightDirection = ValueCache<simd_float3>()
+    @ObservationIgnored public var rightDirection: simd_float3 {
         _rightDirection.get {
             simd_normalize(orientation.act(Satin.worldRightDirection))
         }
@@ -381,22 +381,22 @@ open class Object: Codable, ObservableObject {
 
     // MARK: - World Directions
 
-    var _worldForwardDirection = ValueCache<simd_float3>()
-    public var worldForwardDirection: simd_float3 {
+    @ObservationIgnored var _worldForwardDirection = ValueCache<simd_float3>()
+    @ObservationIgnored public var worldForwardDirection: simd_float3 {
         _worldForwardDirection.get {
             simd_normalize(worldOrientation.act(Satin.worldForwardDirection))
         }
     }
 
-    var _worldUpDirection = ValueCache<simd_float3>()
-    public var worldUpDirection: simd_float3 {
+    @ObservationIgnored var _worldUpDirection = ValueCache<simd_float3>()
+    @ObservationIgnored public var worldUpDirection: simd_float3 {
         _worldUpDirection.get {
             simd_normalize(worldOrientation.act(Satin.worldUpDirection))
         }
     }
 
-    var _worldRightDirection = ValueCache<simd_float3>()
-    public var worldRightDirection: simd_float3 {
+    @ObservationIgnored var _worldRightDirection = ValueCache<simd_float3>()
+    @ObservationIgnored public var worldRightDirection: simd_float3 {
         _worldRightDirection.get {
             simd_normalize(worldOrientation.act(Satin.worldRightDirection))
         }
@@ -404,13 +404,13 @@ open class Object: Codable, ObservableObject {
 
     // MARK: - Parent & Children
 
-    open weak var parent: Object? {
+    @ObservationIgnored  weak var parent: Object? {
         didSet {
             updateWorldMatrix = true
         }
     }
 
-    @Published open var children: [Object] = [] {
+    public var children: [Object] = [] {
         didSet {
             updateLocalBounds = true
         }
@@ -418,25 +418,25 @@ open class Object: Codable, ObservableObject {
 
     // MARK: - OnUpdate Hook
 
-    public var onUpdate: (() -> Void)?
+    @ObservationIgnored public var onUpdate: (() -> Void)?
 
     // MARK: - Publishers
 
-    public let positionPublisher = PassthroughSubject<Object, Never>()
-    public let scalePublisher = PassthroughSubject<Object, Never>()
-    public let orientationPublisher = PassthroughSubject<Object, Never>()
+    @ObservationIgnored public let positionPublisher = PassthroughSubject<Object, Never>()
+    @ObservationIgnored public let scalePublisher = PassthroughSubject<Object, Never>()
+    @ObservationIgnored public let orientationPublisher = PassthroughSubject<Object, Never>()
 
-    public let boundsPublisher = PassthroughSubject<Object, Never>()
-    public let localBoundsPublisher = PassthroughSubject<Object, Never>()
-    public let worldBoundsPublisher = PassthroughSubject<Object, Never>()
+    @ObservationIgnored public let boundsPublisher = PassthroughSubject<Object, Never>()
+    @ObservationIgnored public let localBoundsPublisher = PassthroughSubject<Object, Never>()
+    @ObservationIgnored public let worldBoundsPublisher = PassthroughSubject<Object, Never>()
 
-    public let transformPublisher = PassthroughSubject<Object, Never>()
+    @ObservationIgnored public let transformPublisher = PassthroughSubject<Object, Never>()
 
-    public let childAddedPublisher = PassthroughSubject<Object, Never>()
-    public let childRemovedPublisher = PassthroughSubject<Object, Never>()
+    @ObservationIgnored public let childAddedPublisher = PassthroughSubject<Object, Never>()
+    @ObservationIgnored public let childRemovedPublisher = PassthroughSubject<Object, Never>()
 
-    private var childAddedSubscriptions: [Object: AnyCancellable] = [:]
-    private var childRemovedSubscriptions: [Object: AnyCancellable] = [:]
+    @ObservationIgnored private var childAddedSubscriptions: [Object: AnyCancellable] = [:]
+    @ObservationIgnored private var childRemovedSubscriptions: [Object: AnyCancellable] = [:]
 
     // MARK: - Init
 
