@@ -35,7 +35,7 @@ import Foundation
     }
 
     // Maybe a bit too verbose?
-    @ObservationIgnored private var intervalValueDidChange : Bool = true
+    private var intervalValueDidChange : Bool = true
     public var valueDidChange:Bool
     {
         get
@@ -50,7 +50,7 @@ import Foundation
         }
     }
     
-    @ObservationIgnored private var internalValue:ValueType
+    private var internalValue:ValueType
     {
         didSet {
             if internalValue != oldValue {

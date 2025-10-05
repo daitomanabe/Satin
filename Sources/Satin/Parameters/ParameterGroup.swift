@@ -34,7 +34,7 @@ import Observation
         }
     }
 
-    public var paramsMap: [String: any Parameter] = [:]
+    @ObservationIgnored public var paramsMap: [String: any Parameter] = [:]
 
     @ObservationIgnored private var paramSubscriptions: [String: AnyCancellable] = [:]
 
@@ -462,7 +462,7 @@ import Observation
         return _alignment
     }
 
-    public var structString: String {
+    @ObservationIgnored public var structString: String {
         var structName = label.replacingOccurrences(of: " ", with: "")
         structName = structName.camelCase
         structName = structName.prefix(1).capitalized + structName.dropFirst()
