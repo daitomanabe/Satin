@@ -22,9 +22,9 @@ final class FlockingRenderer: BaseRenderer {
 
     var cancellables = Set<AnyCancellable>()
     #if os(macOS)
-    @Bindable var particleCountParam = IntParameter("Particle Count", 16384, .inputfield)
+    var particleCountParam = IntParameter("Particle Count", 16384, .inputfield)
     #else
-    @Bindable var particleCountParam = IntParameter("Particle Count", 4096, .inputfield)
+    var particleCountParam = IntParameter("Particle Count", 4096, .inputfield)
     #endif
 
     var resetParam = BoolParameter("Reset", false)

@@ -9,22 +9,22 @@ import Observation
 import Combine
 import Foundation
 
-@Observable public class GenericParameter<T: Codable & Equatable>: Parameter {
-    @ObservationIgnored public var id: UUID
+public class GenericParameter<T: Codable & Equatable>: Parameter {
+    public var id: UUID
 
     public typealias ValueType = T
 
     // Delegate
-    @ObservationIgnored public let valuePublisher = PassthroughSubject<ValueType, Never>()
+    public let valuePublisher = PassthroughSubject<ValueType, Never>()
 
     // Getable Properties
-    @ObservationIgnored public var type: ParameterType { .generic }
-    @ObservationIgnored public var string: String { type.string }
+    public var type: ParameterType { .generic }
+    public var string: String { type.string }
 
     // Computed Properties
-    @ObservationIgnored public var size: Int { return MemoryLayout<ValueType>.size }
-    @ObservationIgnored public var stride: Int { return MemoryLayout<ValueType>.stride }
-    @ObservationIgnored public var alignment: Int { return MemoryLayout<ValueType>.alignment }
+    public var size: Int { return MemoryLayout<ValueType>.size }
+    public var stride: Int { return MemoryLayout<ValueType>.stride }
+    public var alignment: Int { return MemoryLayout<ValueType>.alignment }
 
     // Setable Properties
     public var controlType = ControlType.none
@@ -35,7 +35,7 @@ import Foundation
     }
 
     // Maybe a bit too verbose?
-    @ObservationIgnored public var valueDidChange:Bool = true
+    public var valueDidChange:Bool = true
         
     public var value: ValueType
     {
@@ -49,7 +49,7 @@ import Foundation
         }
     }
 
-    @ObservationIgnored public var defaultValue: ValueType
+    public var defaultValue: ValueType
 
     private enum CodingKeys: String, CodingKey {
         case id

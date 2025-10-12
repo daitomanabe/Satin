@@ -12,10 +12,10 @@ import Metal
 import simd
 import Observation
 
-@Observable public final class ParameterGroup: Codable, CustomStringConvertible {
+public final class ParameterGroup: Codable, CustomStringConvertible {
     public let id: String = UUID().uuidString
 
-    @ObservationIgnored public var description: String {
+    public var description: String {
         var dsc = "\(type(of: self)): \(label)\n"
         for param in params {
             dsc += param.description + "\n"
@@ -34,17 +34,17 @@ import Observation
         }
     }
 
-    @ObservationIgnored public var paramsMap: [String: any Parameter] = [:]
+    public var paramsMap: [String: any Parameter] = [:]
 
-    @ObservationIgnored private var paramSubscriptions: [String: AnyCancellable] = [:]
+    private var paramSubscriptions: [String: AnyCancellable] = [:]
 
-    @ObservationIgnored public let parameterAddedPublisher = PassthroughSubject<any Parameter, Never>()
-    @ObservationIgnored public let parameterRemovedPublisher = PassthroughSubject<any Parameter, Never>()
-    @ObservationIgnored public let parameterUpdatedPublisher = PassthroughSubject<any Parameter, Never>()
+    public let parameterAddedPublisher = PassthroughSubject<any Parameter, Never>()
+    public let parameterRemovedPublisher = PassthroughSubject<any Parameter, Never>()
+    public let parameterUpdatedPublisher = PassthroughSubject<any Parameter, Never>()
 
-    @ObservationIgnored public let loadedPublisher = PassthroughSubject<ParameterGroup, Never>()
-    @ObservationIgnored public let savedPublisher = PassthroughSubject<ParameterGroup, Never>()
-    @ObservationIgnored public let clearedPublisher = PassthroughSubject<ParameterGroup, Never>()
+    public let loadedPublisher = PassthroughSubject<ParameterGroup, Never>()
+    public let savedPublisher = PassthroughSubject<ParameterGroup, Never>()
+    public let clearedPublisher = PassthroughSubject<ParameterGroup, Never>()
 
     deinit {
         params = []
@@ -394,15 +394,15 @@ import Observation
         }
     }
 
-    @ObservationIgnored private var _size = 0
-    @ObservationIgnored private var _stride = 0
-    @ObservationIgnored private var _alignment = 0
-    @ObservationIgnored private var _dataAllocated = false
-    @ObservationIgnored private var _reallocateData = false
-    @ObservationIgnored private var _updateSize = true
-    @ObservationIgnored private var _updateStride = true
-    @ObservationIgnored private var _updateAlignment = true
-    @ObservationIgnored private var _updateData = true
+    private var _size = 0
+    private var _stride = 0
+    private var _alignment = 0
+    private var _dataAllocated = false
+    private var _reallocateData = false
+    private var _updateSize = true
+    private var _updateStride = true
+    private var _updateAlignment = true
+    private var _updateData = true
 
     private func updateSize() {
         var result = 0
@@ -419,7 +419,7 @@ import Observation
         _size = result
     }
 
-    @ObservationIgnored public var size: Int {
+    public var size: Int {
         if _updateSize {
             updateSize()
             _updateSize = false
@@ -438,7 +438,7 @@ import Observation
         _stride = result
     }
 
-    @ObservationIgnored public var stride: Int {
+    public var stride: Int {
         if _updateStride {
             updateStride()
             _updateStride = false
@@ -454,7 +454,7 @@ import Observation
         _alignment = result
     }
 
-    @ObservationIgnored public var alignment: Int {
+    public var alignment: Int {
         if _updateAlignment {
             updateAlignment()
             _updateAlignment = false
@@ -462,7 +462,7 @@ import Observation
         return _alignment
     }
 
-    @ObservationIgnored public var structString: String {
+    public var structString: String {
         var structName = label.replacingOccurrences(of: " ", with: "")
         structName = structName.camelCase
         structName = structName.prefix(1).capitalized + structName.dropFirst()
@@ -474,7 +474,7 @@ import Observation
         return source
     }
 
-    @ObservationIgnored private lazy var _data: UnsafeMutableRawPointer = {
+    private lazy var _data: UnsafeMutableRawPointer = {
         _dataAllocated = true
         return UnsafeMutableRawPointer.allocate(byteCount: size, alignment: alignment)
     }()
@@ -487,7 +487,7 @@ import Observation
         return UnsafeMutableRawPointer.allocate(byteCount: size, alignment: alignment)
     }
 
-    @ObservationIgnored public var data: UnsafeRawPointer {
+    public var data: UnsafeRawPointer {
         if _reallocateData {
             _data = allocateData()
             _reallocateData = false

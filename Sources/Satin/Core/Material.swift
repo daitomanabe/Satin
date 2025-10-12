@@ -26,7 +26,7 @@ public struct DepthBias: Codable, Equatable {
     }
 }
 
-@Observable open class Material: Codable {
+open class Material: Codable {
     
     let id: String = UUID().uuidString
 
@@ -39,7 +39,7 @@ public struct DepthBias: Codable, Equatable {
         return result
     }
 
-    @ObservationIgnored public lazy var label: String = prefix
+    public lazy var label: String = prefix
 
     public var vertexDescriptor: MTLVertexDescriptor {
         get { renderingConfiguration.vertexDescriptor }
@@ -51,7 +51,7 @@ public struct DepthBias: Codable, Equatable {
         set { renderingConfiguration.tessellationDescriptor = newValue }
     }
 
-    @ObservationIgnored private var parametersSubscription: AnyCancellable?
+    private var parametersSubscription: AnyCancellable?
 
     public private(set) var shader: Shader? {
         didSet {
@@ -92,7 +92,7 @@ public struct DepthBias: Codable, Equatable {
         set { renderingConfiguration.blending.alphaBlendOperation = newValue }
     }
 
-    @ObservationIgnored private var renderingConfiguration = RenderingConfiguration() {
+    private var renderingConfiguration = RenderingConfiguration() {
         didSet {
             if renderingConfiguration != oldValue, let shader = shader {
                 setupShaderRenderingConfiguration(shader)
@@ -100,10 +100,10 @@ public struct DepthBias: Codable, Equatable {
         }
     }
 
-    @ObservationIgnored public var uniforms: UniformBuffer?
+    public var uniforms: UniformBuffer?
 
     public let parametersSetPublisher = PassthroughSubject<ParameterGroup, Never>()
-    @ObservationIgnored private var parameterGroupSubscriptions = Set<AnyCancellable>()
+    private var parameterGroupSubscriptions = Set<AnyCancellable>()
     public private(set) var parameters: ParameterGroup = ParameterGroup() {
         didSet {
             if parameters == oldValue { return }
@@ -191,8 +191,8 @@ public struct DepthBias: Codable, Equatable {
         }
     }
 
-    @ObservationIgnored private var uniformsNeedsUpdate = true
-    @ObservationIgnored private var depthNeedsUpdate = false
+    private var uniformsNeedsUpdate = true
+    private var depthNeedsUpdate = false
 
     public var depthBias: DepthBias?
     public var onBind: ((_ renderEncoder: MTLRenderCommandEncoder) -> Void)?
