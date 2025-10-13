@@ -70,13 +70,13 @@ public final class ParameterGroup: Codable, CustomStringConvertible {
     public func append(_ param: some Parameter) {
         params.append(param)
         paramsMap[param.label] = param
-        paramSubscriptions[param.label] = param.valuePublisher.sink { [weak self, weak param] _ in
+        paramSubscriptions[param.label] = param.valuePublisher.sink { [weak self, /*weak param*/] _ in
             guard let self = self
-                  let param 
+//                  let param 
             else { return }
             self._updateData = true
 //            self.objectWillChange.send()
-            self.parameterUpdatedPublisher.send(param)
+//            self.parameterUpdatedPublisher.send(param)
         }
 
         parameterAddedPublisher.send(param)
