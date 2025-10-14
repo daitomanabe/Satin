@@ -10,7 +10,6 @@ import Combine
 import Foundation
 import Metal
 import simd
-import Observation
 
 public final class ParameterGroup: Codable, CustomStringConvertible {
     public let id: String = UUID().uuidString
