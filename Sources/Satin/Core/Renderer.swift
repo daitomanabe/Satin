@@ -580,13 +580,13 @@ open class Renderer {
                     shadowCasters.append(renderable)
                 }
             }
-        }
-
-        for child in object.children {
-            updateLists(
-                object: child,
-                visible: object.visible && visible
-            )
+            
+            for child in object.children {
+                updateLists(
+                    object: child,
+                    visible: object.visible && visible
+                )
+            }
         }
     }
 
