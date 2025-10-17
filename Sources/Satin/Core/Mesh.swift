@@ -38,9 +38,6 @@ open class Mesh: Renderable {
         }
     }
 
-  
-  
-
     override public var windingOrder: MTLWinding {
         get {
             geometry.windingOrder
@@ -82,8 +79,6 @@ open class Mesh: Renderable {
         }
     }
     
-    
-
     override open var material: Material? {
         didSet {
             if material != oldValue {
@@ -97,7 +92,7 @@ open class Mesh: Renderable {
     public internal(set) var submeshes: [Submesh] = []
     {
         didSet {
-            self.updateMaterials()
+            self.updateAllMaterials()
         }
     }
 
@@ -169,7 +164,7 @@ open class Mesh: Renderable {
         material.tessellationDescriptor = geometry.tessellationDescriptor
         material.context = context
         
-        self.updateMaterials()
+        self.updateAllMaterials()
     }
 
     // MARK: - Binding
@@ -229,7 +224,7 @@ open class Mesh: Renderable {
         )
     }
     
-    private func updateMaterials()
+    private func updateAllMaterials()
     {
         var allMaterials = [Material]()
         if let material = material {
