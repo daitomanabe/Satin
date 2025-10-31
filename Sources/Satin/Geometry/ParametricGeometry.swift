@@ -16,7 +16,7 @@ import SatinCore
 public final class ParametricGeometry: Geometry {
     public var rangeU: ClosedRange<Float> = 0.0 ... 1.0 {
         didSet {
-            if oldValue != rangeV {
+            if oldValue != rangeU {
                 _updateGeometry = true
             }
         }
@@ -133,8 +133,9 @@ public final class ParametricGeometry: Geometry {
         let ru = resolution.x
         let rv = resolution.y
 
-        let ruf = Float(ru)
-        let rvf = Float(rv)
+        // guard against div/0 when ru or rv is 0
+        let ruf = max(1.0, Float(ru))
+        let rvf = max(1.0, Float(rv))
 
         let ruInc = (rangeU.upperBound - rangeU.lowerBound) / ruf
         let rvInc = (rangeV.upperBound - rangeV.lowerBound) / rvf
