@@ -899,6 +899,7 @@ open class Renderer {
     private func setupDepthTexture(arrayLength: Int) {
         guard updateDepthTexture,
               context.depthPixelFormat != .invalid,
+              (depthLoadAction != .dontCare && depthStoreAction != .dontCare),
               size.width > 0,
               size.height > 0
         else { return }
@@ -926,6 +927,8 @@ open class Renderer {
     private func setupDepthMultisampleTexture(arrayLength: Int) {
         guard updateDepthMultisampleTexture,
               context.depthPixelFormat != .invalid,
+              (depthLoadAction != .dontCare && depthStoreAction != .dontCare),
+
               context.sampleCount > 1,
               size.width > 0,
               size.height > 0
@@ -954,7 +957,12 @@ open class Renderer {
     // MARK: - Stencil Textures
 
     private func setupStencilTexture(arrayLength: Int) {
-        guard updateStencilTexture, context.stencilPixelFormat != .invalid, size.width > 1, size.height > 1 else { return }
+        guard updateStencilTexture,
+              context.stencilPixelFormat != .invalid,
+              (stencilLoadAction != .dontCare && stencilStoreAction != .dontCare),
+              size.width > 1,
+              size.height > 1
+        else { return }
 
         let descriptor = MTLTextureDescriptor()
         descriptor.pixelFormat = context.stencilPixelFormat
@@ -976,6 +984,7 @@ open class Renderer {
     private func setupStencilMultisampleTexture(arrayLength: Int) {
         guard updateStencilMultisampleTexture,
               context.stencilPixelFormat != .invalid,
+              (stencilLoadAction != .dontCare && stencilStoreAction != .dontCare),
               context.sampleCount > 1,
               size.width > 0,
               size.height > 0 else { return }
